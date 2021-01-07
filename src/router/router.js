@@ -1,7 +1,8 @@
 import SignUp from '@components-base/Auth/components/SignUp.vue'
 import SignIn from '@components-base/Auth/components/SignIn.vue'
 
-import Home from './Home.vue'
+import Home from '@components-base/Main/components/Home.vue'
+import Messages from '@components-base/Messages/components/Messages.vue'
 
 const router = {
   path: '/',
@@ -16,6 +17,11 @@ const router = {
       path: 'login',
       name: 'login',
       component: SignIn
+    },
+    {
+      path: 'messages',
+      name: 'messages',
+      component: Messages
     }
   ]
 }

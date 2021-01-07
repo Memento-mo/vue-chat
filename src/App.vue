@@ -26,7 +26,13 @@ body {
 }
 
 :root {
-  --color-primary:  rgba(255,152,0, 1);
-  --color-error: #ff1744;
+  --color-light rgba(238,238,238, 1)
+  --color-light-2 rgba(117,117,117, 1)
+  --color-primary  rgba(255,152,0, 1)
+  --color-primary-light rgba(255,167,38, .4)
+  --color-primary-dark rgba(251,192,45, 1)
+  --color-secondary rgba(33,33,33, 1)
+  --color-secondary-light rgba(66,66,66,1)
+  --color-error #ff1744
 }
 </style>

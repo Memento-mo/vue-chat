@@ -1,35 +1,35 @@
 const path = require('path')
- const { CleanWebpackPlugin } = require('clean-webpack-plugin')
- const { VueLoaderPlugin } = require('vue-loader')
- const HtmlWebpackPlugin = require('html-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const { VueLoaderPlugin } = require('vue-loader')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
- function resolve(dir) {
+function resolve(dir) {
   return path.resolve(__dirname, dir)
 }
 
- module.exports = {
-   entry: [
+module.exports = {
+  entry: [
     require.resolve(`webpack-dev-server/client`),
     path.resolve(__dirname, "src/main.js")
-   ].filter(Boolean),
-   output: {
+  ].filter(Boolean),
+  output: {
     filename: 'bundle.js',
     path: path.join(__dirname, 'dist'),
     publicPath: '/'
-   },
-   resolve: {
-    extensions: ['.js', '.ts', '.vue'],
-    alias: {
-      vue: '@vue/runtime-dom',
-      '@api': resolve('src/api'),
-      '@components-ui': resolve('src/components/ui/components'),
-      '@components-base': resolve('src/components'),
-      '@utils': resolve('src/utils'),
-      '~': resolve('src/'),
-      'primevue': resolve('node_modules/primevue')
-    }
-   },
-   module: {
+  },
+  resolve: {
+  extensions: ['.js', '.ts', '.vue'],
+  alias: {
+    vue: '@vue/runtime-dom',
+    '@api': resolve('src/api'),
+    '@components-ui': resolve('src/components/ui/components'),
+    '@components-base': resolve('src/components'),
+    '@utils': resolve('src/utils'),
+    '~': resolve('src/'),
+    'primevue': resolve('node_modules/primevue')
+  }
+  },
+  module: {
     rules: [
       {
         test: /\.vue$/,
@@ -78,11 +78,11 @@ const path = require('path')
       }
     ]
   },
-   plugins: [
-     new VueLoaderPlugin(),
-     new CleanWebpackPlugin(),
-     new HtmlWebpackPlugin({
-       template: path.resolve(__dirname, 'src/public/index.html')
-     }),
-   ]
- }
+  plugins: [
+    new VueLoaderPlugin(),
+    new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, 'src/public/index.html')
+    }),
+  ]
+}
