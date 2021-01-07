@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { ref, reactive, provide } from 'vue'
+import { ref, reactive, provide, onMounted } from 'vue'
 
 import SignWrapper from './SignWrapper.vue'
 
@@ -27,13 +27,16 @@ import Toast from 'primevue/toast.js'
 import { useStore } from 'vuex'
 import { useToast } from 'primevue/usetoast.js'
 import { useAxios } from '@api/api.js'
+import { useRouter } from 'vue-router'
 
 export default {
   setup() {
     const $http = useAxios()
     const store = useStore()
-    const isLoading = ref(false)
     const toast = useToast()
+    const router = useRouter()
+
+    const isLoading = ref(false)
 
     const isError = ref(true)
 
@@ -92,6 +95,7 @@ export default {
         .then(({ data }) => {
           store.dispatch('auth/setToken', { token: data.token, refreshToken: data.refreshToken })
 
+          router.replace({ name: 'messages' })
           toast.add({ severity:'success', summary: 'Success', detail:'You have successfully logged in', life: 3000 })
         })
         .catch(() => {
@@ -101,6 +105,18 @@ export default {
           setLoading(false)
         })
     }
+
+    function init () {
+      const token = store.getters['auth/getToken']
+
+      if (token) {
+        return router.replace({ name: 'messages' })
+      }
+    }
+
+    onMounted(() => {
+      init()
+    })
 
     provide('isLoading', isLoading)
 

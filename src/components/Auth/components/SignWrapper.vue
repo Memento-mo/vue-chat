@@ -121,7 +121,7 @@ import { useRoute } from 'vue-router'
   transform: translate(50%,-50%);
 
   color: rgba(224,224,224 ,1);
-  background-color: rgba(33,33,33,1);
+  background-color: var(--color-secondary);
 
   -webkit-box-shadow: 0px 0px 35px 2px rgba(26,23,26,1);
   -moz-box-shadow: 0px 0px 35px 2px rgba(26,23,26,1);

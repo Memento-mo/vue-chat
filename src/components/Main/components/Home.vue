@@ -5,18 +5,23 @@
 <script>
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
 export default {
   setup() {
-    const isAuth = ref(false)
     const router = useRouter()
+    const store = useStore()
 
     function init () {
-      if (!isAuth.value) {
+      const token = store.getters['auth/getToken']
+
+      if (!token) {
         return router.replace({ name: 'login' })
       }
 
-      return router.replace('/')
+      if (token && router.currentRoute.value.name === 'login') {
+        return router.replace('/messages')
+      }
     }
     
     onMounted(() => {
@@ -30,8 +35,6 @@ export default {
 a {
   text-decoration: none;
   color: #000;
-  margin-right: 10px;
-  font-size: 16px;
 }
 
 .control_panel {

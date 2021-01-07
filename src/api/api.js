@@ -1,5 +1,6 @@
 import store from '../store'
 import axios from 'axios'
+import router from '../router'
 
 let refreshTokenPromise
 
@@ -19,7 +20,7 @@ const createUpdateAuthInterceptor = (http) => async error => {
   }
   
   if(error.response.status === 401) {
-    console.log('LOGIN PLEASE')
+    return router.replace({ name: 'login' })
   }
   
   return Promise.reject(error)
@@ -46,6 +47,6 @@ api.interceptors.request.use(response => {
 
 api.interceptors.response.use(null, updateAuthCb)
 
-export function useAxios () {
+export const useAxios = () => {
   return api
 }
