@@ -34,11 +34,14 @@
         :style="{ backgroundImage: `url(${account.avatar})` }"
       />
       <div>
-        <input
-          :class="$style['input-box__input']"
-          type="text"
-          placeholder="Write a message..."
-        />
+        <form @submit.prevent="handleSend">
+          <input
+            v-model="inputMessage"
+            :class="$style['input-box__input']"
+            type="text"
+            placeholder="Write a message..."
+          />
+        </form>
       </div>
       <div
         :class="$style['input-box__image']" 
@@ -51,12 +54,16 @@
 <script>
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
+import { useAxios } from '@api/api.js'
+
 import { computed, onMounted, ref, watch } from 'vue'
 
 export default {
   setup () {
     const route = useRoute()
     const store = useStore()
+    const http = useAxios()
+    const inputMessage = ref('')
 
     const chat = ref(null)
 
@@ -65,7 +72,7 @@ export default {
     })
 
     const messages = computed(() => {
-      let bothMessages = [...chat.value.messages.interlocutor, ...chat.value.messages.my].sort((a, b) => {
+      let bothMessages = chat.value.messages.sort((a, b) => {
         const dateA = new Date(a.time)
         const dateB = new Date(b.time)
 
@@ -77,6 +84,10 @@ export default {
 
     function setChat() {
       chat.value = store.getters['messages/getChatById'](route.query.id)
+    }
+
+    function handleSend() {
+      // sending
     }
 
     function init() {
@@ -92,6 +103,8 @@ export default {
     return {
       chat,
       messages,
+      handleSend,
+      inputMessage,
       account: computed(() => store.getters['profile/getAccount'])
     }
   }

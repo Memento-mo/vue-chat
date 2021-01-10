@@ -1,8 +1,12 @@
 <template>
+  <div v-if="isLoading">
+    Loading...
+  </div>
   <router-link
     :to="{ name: 'messages', query: { id: item.id } }"
     :key="item.id"
     v-for="item in getChats"
+    v-else
   >
     <div :class="$style.chat">
       <div
@@ -21,12 +25,14 @@
 </template>
 
 <script>
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 
 export default {
   setup () {
     const store = useStore()
+    
+    const isLoading = ref(false)
 
     function getTime(time) {
       const date = new Date(time)
@@ -34,9 +40,26 @@ export default {
       return `${date.getHours().toString().length !== 1 ? date.getHours() : '0' + date.getHours()}:${date.getMinutes().toString().length !== 1 ? date.getMinutes() : '0' + date.getMinutes()}`
     }
 
+    function fetchChats() {
+      return store.dispatch('messages/fetchChats')
+    }
+
+    async function init () {
+      isLoading.value = true
+
+      await fetchChats()
+
+      isLoading.value = false
+    }
+
+    onMounted(() => {
+      init()
+    })
+
     return {
       getChats: computed(() => store.getters['messages/getChats']),
-      getTime
+      getTime,
+      isLoading
     }
   }
 }

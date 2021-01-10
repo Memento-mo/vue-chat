@@ -32,19 +32,37 @@ import Chats from './Chats.vue'
 import Chat from './Chat.vue'
 
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
+import { onMounted } from 'vue'
 
 export default {
   setup() {
     const router = useRouter()
+    const store = useStore()
 
     function handleTo(type) {
       switch(type) {
         case 'signout':
+          store.dispatch('auth/logout')
+          store.dispatch('messages/clearChats')
+
           return router.replace({ name: 'login' })
         case 'registration':
           return router.replace({ name: 'registration' })
       }
     }
+
+    function fetchAccount() {
+      return store.dispatch('profile/fetchAccount')
+    }
+
+    async function init() {
+      await fetchAccount()
+    }
+
+    onMounted(() => {
+      init()
+    })
 
     return {
       handleTo

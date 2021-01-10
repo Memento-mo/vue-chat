@@ -4,7 +4,7 @@ const path = require('path')
 
 module.exports = merge(common, {
   mode: 'development',
-  devtool: 'eval',
+  devtool: 'source-map',
   devServer: {
     compress: true,
     port: 8000,
