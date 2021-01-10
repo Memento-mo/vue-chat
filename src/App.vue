@@ -5,8 +5,20 @@
 </template>
 
 <script>
+import { onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 export default {
-  name: 'App'
+  name: 'App',
+  setup() {
+    const router = useRouter()
+    const route = useRoute()
+
+    onMounted(() => {
+      if (route.path === '/') {
+        router.replace({ name: 'login' })
+      }
+    })
+  }
 }
 </script>
 

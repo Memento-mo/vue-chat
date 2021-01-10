@@ -23,9 +23,8 @@ export default {
     }
   },
   mutations: {
-    LOGIN_SUCCESS: (state, token) => {
-      state.token = token
-    }
+    LOGIN_SUCCESS: (state, token) => (state.token = token),
+    LOGOUT: (state) => (state.token = null)
   },
   actions: {
     setToken: ({ commit }, { token, refreshToken }) => {
@@ -47,6 +46,12 @@ export default {
 
           dispatch('setToken', { token: data.token, refreshToken: data.refreshToken })
         })
+    },
+    logout: ({ commit }) => {
+      localStorage.removeItem('token')
+      localStorage.removeItem('refresh_token')
+
+      commit('LOGOUT')
     }
   }
 }
