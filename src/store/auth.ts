@@ -1,4 +1,7 @@
-import { useAxios } from '@api/api.js'
+import { useAxios } from '@api/api'
+
+import { VuexControl } from '@/types/store/types'
+import { Tokens, State } from '@/types/store/auth'
 
 const $http = useAxios()
 
@@ -8,7 +11,7 @@ export default {
     token: null
   },
   getters: {
-    getToken: (state) => {
+    getToken: (state: State) => {
       if (!state) return null
 
       let token = state.token
@@ -23,11 +26,11 @@ export default {
     }
   },
   mutations: {
-    LOGIN_SUCCESS: (state, token) => (state.token = token),
-    LOGOUT: (state) => (state.token = null)
+    LOGIN_SUCCESS: (state: State, token: string) => (state.token = token),
+    LOGOUT: (state: State) => (state.token = null)
   },
   actions: {
-    setToken: ({ commit }, { token, refreshToken }) => {
+    setToken: ({ commit }: VuexControl<State>, { token, refreshToken }: Tokens) => {
       if (token) {
         const access_token = token
         const refresh_token = refreshToken
@@ -38,16 +41,12 @@ export default {
         commit('LOGIN_SUCCESS', access_token)
       }
     },
-    verifyToken: async ({ dispatch }) => {
+    verifyToken: async () => {
       const refresh_token = localStorage.getItem('refresh_token')
 
       return $http.post('/token', { refresh_token })
-        .then(({ data }) => {
-
-          dispatch('setToken', { token: data.token, refreshToken: data.refreshToken })
-        })
     },
-    logout: ({ commit }) => {
+    logout: ({ commit }: VuexControl<State>) => {
       localStorage.removeItem('token')
       localStorage.removeItem('refresh_token')
 

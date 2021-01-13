@@ -54,8 +54,8 @@
   </div>
 </template>
 
-<script>
-import { computed, ref, watch } from 'vue'
+<script lang="ts">
+import { computed, ref, watch, defineComponent, ComputedRef } from 'vue'
 
 import Form from '@components-ui/Form/Form.vue'
 import FormItem from '@components-ui/Form/FormItem.vue'
@@ -63,7 +63,7 @@ import Input from '@components-ui/Form/Input.vue'
 import Button from '@components-ui/Form/Button.vue'
 import { useRoute } from 'vue-router'
 
-  export default {
+  export default defineComponent({
     props: {
       title: {
         type: String,
@@ -92,9 +92,9 @@ import { useRoute } from 'vue-router'
     setup () {
       const route = useRoute()
 
-      const isLogin = computed(() => route.name === 'login')
+      const isLogin: ComputedRef<boolean> = computed(() => route.name === 'login')
 
-      const isRegistration = computed(() => route.name === 'registration')
+      const isRegistration: ComputedRef<boolean> = computed(() => route.name === 'registration')
 
       return {
         isLogin,
@@ -107,7 +107,7 @@ import { useRoute } from 'vue-router'
       FormItem,
       Button
     }
-  }
+  })
 </script>
 
 <style lang="stylus" module>

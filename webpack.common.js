@@ -10,7 +10,7 @@ function resolve(dir) {
 module.exports = {
   entry: [
     require.resolve(`webpack-dev-server/client`),
-    path.resolve(__dirname, "src/main.js")
+    path.resolve(__dirname, "src/main")
   ].filter(Boolean),
   output: {
     filename: 'bundle.js',
@@ -18,7 +18,7 @@ module.exports = {
     publicPath: '/'
   },
   resolve: {
-  extensions: ['.js', '.ts', '.vue'],
+  extensions: ['.ts', '.js', '.vue', '.json'],
   alias: {
     vue: '@vue/runtime-dom',
     '@api': resolve('src/api'),
@@ -26,11 +26,20 @@ module.exports = {
     '@components-base': resolve('src/components'),
     '@utils': resolve('src/utils'),
     '~': resolve('src/'),
+    '@/types': resolve('src/types/'),
     'primevue': resolve('node_modules/primevue')
   }
   },
   module: {
     rules: [
+      {
+        test: /\.tsx?$/,
+        loader: 'ts-loader',
+        options: {
+          appendTsSuffixTo: [/\.vue$/],
+        },
+        exclude: /node_modules/,
+      },
       {
         test: /\.vue$/,
         use: 'vue-loader'

@@ -1,8 +1,8 @@
-import { createWebHistory, createRouter } from 'vue-router'
+import { createWebHistory, createRouter, Router } from 'vue-router'
 
 import routes from './router/router'
 
-const router = createRouter({
+const router: Router = createRouter({
   history: createWebHistory(),
   routes: [routes]
 })

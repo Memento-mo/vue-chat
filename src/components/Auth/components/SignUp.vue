@@ -12,8 +12,8 @@
   <Toast position="top-center" />
 </template>
 
-<script>
-import { reactive, ref, provide } from 'vue'
+<script lang="ts">
+import { reactive, ref, provide, defineComponent, Ref } from 'vue'
 
 import Form from '@components-ui/Form/Form.vue'
 import FormItem from '@components-ui/Form/FormItem.vue'
@@ -27,25 +27,31 @@ import validator from 'email-validator'
 
 import { useStore } from 'vuex'
 import { useToast } from 'primevue/usetoast.js'
-import { useAxios } from '@api/api.js'
+import { useAxios } from '@api/api'
+import { IErrors, IField, IForm, HTMLElementEvent } from '@/types/auth/signIn'
+import { Tokens } from '@/types/store/auth'
+import { AxiosResponse } from 'axios'
 
-export default {
+type Fields = 'login' | 'password' | 'firstName' | 'lastName' | 'email'
+
+export default defineComponent({
   setup() {
     const $http = useAxios()
     const store = useStore()
     const toast = useToast()
 
-    const isLoading = ref(false)
+    const isLoading: Ref<boolean> = ref(false)
 
-    let isError = ref(true)
-    const fields = [
+    let isError: Ref<boolean> = ref(true)
+
+    const fields: IField[] = [
       { field: 'login', placeholder: 'Login' },
       { field: 'firstName', placeholder: 'First name' },
       { field: 'lastName', placeholder: 'Last name' },
       { field: 'email', placeholder: 'Email' },
       { field: 'password', placeholder: 'Password' },
     ]
-    const errors = reactive({
+    const errors: IErrors = reactive({
       email: { isError: false, message: 'Неправильный почтовый адрес' },
       login: {
         isError: false,
@@ -65,19 +71,19 @@ export default {
       }
     })
 
-    const form = reactive({ login: '', password: '', email: '', firstName: '', lastName: ''})
+    const form: IForm = reactive({ login: '', password: '', email: '', firstName: '', lastName: ''})
 
-    function setLoading (is) {
+    function setLoading (is: boolean): void {
       isLoading.value = is
     }
 
-    function submit (e) {
+    function submit (e: Event): void {
       setLoading(true)
 
       e.preventDefault()
 
       $http.post('/registration', form)
-        .then(({ data }) => {
+        .then(({ data }: AxiosResponse<Tokens>) => {
           store.dispatch('auth/setToken', { token: data.token, refreshToken: data.refreshToken })
 
           toast.add({ severity:'success', summary: 'Success', detail:'Account created successfully', life: 3000 })
@@ -90,12 +96,12 @@ export default {
         })
     }
 
-    function inputChange (val, input) {
+    function inputChange <T extends keyof Pick<IForm, Fields>>(val: HTMLElementEvent<HTMLTextAreaElement>, input: T): void {
       form[input] = val.target.value
       validateForm(input, val.target.value)
     }
 
-    function validateForm (type, value) {
+    function validateForm (type: Fields, value: string): void {
       const { email, login, password, firstName, lastName } = errors
       switch (type) {
         case 'login':
@@ -116,8 +122,10 @@ export default {
           break
       }
 
-      const someError = Object.keys(errors).some(value => errors[value].isError)
-      const someLengthEqualZero = Object.keys(form).some(value => form[value].length === 0)
+      const getKeys = Object.keys as <T extends Pick<IErrors, Fields> | Pick<IForm, Fields>>(obj: T) => Array<keyof T>
+
+      const someError = getKeys(errors).some(value => errors[value].isError)
+      const someLengthEqualZero = getKeys(form).some(value => form[value].length === 0)
 
       someError || someLengthEqualZero ? isError.value = true : isError.value = false
     }
@@ -130,5 +138,5 @@ export default {
     Toast,
     SignWrapper
   },
-}
+})
 </script>

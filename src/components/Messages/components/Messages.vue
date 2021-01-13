@@ -27,20 +27,22 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import Chats from './Chats.vue'
 import Chat from './Chat.vue'
 
 import { useRouter } from 'vue-router'
-import { useStore } from 'vuex'
-import { onMounted } from 'vue'
+import { Dispatch, useStore } from 'vuex'
+import { onMounted, defineComponent } from 'vue'
 
-export default {
+type Actions = 'signout' | 'registration'
+
+export default defineComponent({
   setup() {
     const router = useRouter()
     const store = useStore()
 
-    function handleTo(type) {
+    function handleTo(type: Actions) {
       switch(type) {
         case 'signout':
           store.dispatch('auth/logout')
@@ -52,11 +54,11 @@ export default {
       }
     }
 
-    function fetchAccount() {
+    function fetchAccount(): Promise<Dispatch> {
       return store.dispatch('profile/fetchAccount')
     }
 
-    async function init() {
+    async function init(): Promise<void> {
       await fetchAccount()
     }
 
@@ -72,7 +74,7 @@ export default {
     Chats,
     Chat
   }
-}
+})
 </script>
 
 <style lang="stylus" module>
@@ -99,6 +101,7 @@ export default {
   height 85vh
 
   &__chats {
+    min-width 250px
     flex-basis 23%
     height 100%
     background var(--color-secondary)

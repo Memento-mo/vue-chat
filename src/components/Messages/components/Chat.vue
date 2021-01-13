@@ -51,38 +51,43 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
-import { useAxios } from '@api/api.js'
+import { useAxios } from '@api/api'
 
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, Ref, watch, defineComponent, ComputedRef } from 'vue'
+import { Chat, Message } from '@/types/store/messages'
 
-export default {
+export default defineComponent({
   setup () {
     const route = useRoute()
     const store = useStore()
     const http = useAxios()
-    const inputMessage = ref('')
+    const inputMessage: Ref<string> = ref('')
 
-    const chat = ref(null)
+    const chat: Ref<Chat | null> = ref(null)
 
     watch(() => route.query, () => {
       setChat()
     })
 
-    const messages = computed(() => {
-      let bothMessages = chat.value.messages.sort((a, b) => {
-        const dateA = new Date(a.time)
-        const dateB = new Date(b.time)
+    const messages: ComputedRef<Message[]> = computed(() => {
+      if (chat.value) {
+        let bothMessages = chat.value.messages.sort((a, b) => {
+          const dateA = Number(new Date(a.time))
+          const dateB = Number(new Date(b.time))
+  
+          return dateB - dateA
+        })
 
-        return dateB - dateA
-      })
+        return bothMessages
+      }
 
-      return bothMessages
+      return []
     })
 
-    function setChat() {
+    function setChat(): void {
       chat.value = store.getters['messages/getChatById'](route.query.id)
     }
 
@@ -90,7 +95,7 @@ export default {
       // sending
     }
 
-    function init() {
+    function init(): void {
       if (route.query.id) {
         setChat()
       }
@@ -108,7 +113,7 @@ export default {
       account: computed(() => store.getters['profile/getAccount'])
     }
   }
-}
+})
 </script>
 
 <style lang="stylus" module>
