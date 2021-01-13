@@ -1,8 +1,8 @@
 import { createStore } from 'vuex'
 
-import auth from './store/auth.js'
-import messages from './store/messages.js'
-import profile from './store/profile.js'
+import auth from './store/auth'
+import messages from './store/messages'
+import profile from './store/profile'
 
 export default createStore({
   modules: {

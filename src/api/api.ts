@@ -1,17 +1,20 @@
 import store from '../store'
-import axios from 'axios'
+import axios, { AxiosInstance } from 'axios'
+import { ServerResponse, Interceptor, Error } from '@/types/api/types'
 import router from '../router'
 
-let refreshTokenPromise
+let refreshTokenPromise: Promise<ServerResponse>
 
-const createUpdateAuthInterceptor = (http) => async error => {
+const createUpdateAuthInterceptor = (http: AxiosInstance) => async (error: Error): Interceptor => {
   if (error.response.status === 403) {
     if (!refreshTokenPromise) {
       refreshTokenPromise = store.dispatch('auth/verifyToken')
     }
     
     refreshTokenPromise = await refreshTokenPromise
-      .then(() => null)
+      .then(({ data }) => {
+        return store.dispatch('auth/setToken', { token: data.token, refreshToken: data.refreshToken })
+      })
       .catch(() => null)
     
     error.config.headers.Authorization = store.getters['auth/getToken']
@@ -20,15 +23,17 @@ const createUpdateAuthInterceptor = (http) => async error => {
   }
   
   if(error.response.status === 401) {
-    return router.replace({ name: 'login' })
+    router.replace({ name: 'login' })
+
+    return null
   }
   
   return Promise.reject(error)
 }
 
-const updateAuthCb = createUpdateAuthInterceptor(axios)
+const updateAuthCb: (error: Error) => Interceptor = createUpdateAuthInterceptor(axios)
 
-const api = axios.create({
+const api: AxiosInstance = axios.create({
   baseURL: 'http://localhost:9000',
   headers: {
     'Access-Control-Allow-Origin': '*',
@@ -45,8 +50,8 @@ api.interceptors.request.use(response => {
   return response
 })
 
-api.interceptors.response.use(null, updateAuthCb)
+api.interceptors.response.use((val) => val, updateAuthCb)
 
-export const useAxios = () => {
+export const useAxios = (): AxiosInstance => {
   return api
 }

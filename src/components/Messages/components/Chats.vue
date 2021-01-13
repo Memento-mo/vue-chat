@@ -24,27 +24,27 @@
   </router-link>
 </template>
 
-<script>
-import { computed, onMounted, ref } from 'vue'
-import { useStore } from 'vuex'
+<script lang="ts">
+import { computed, onMounted, ref, Ref, defineComponent } from 'vue'
+import { Dispatch, useStore } from 'vuex'
 
-export default {
+export default defineComponent({
   setup () {
     const store = useStore()
     
-    const isLoading = ref(false)
+    const isLoading: Ref<boolean> = ref(false)
 
-    function getTime(time) {
-      const date = new Date(time)
+    function getTime(time: number) {
+      const date: Date = new Date(time)
 
       return `${date.getHours().toString().length !== 1 ? date.getHours() : '0' + date.getHours()}:${date.getMinutes().toString().length !== 1 ? date.getMinutes() : '0' + date.getMinutes()}`
     }
 
-    function fetchChats() {
+    function fetchChats(): Promise<Dispatch> {
       return store.dispatch('messages/fetchChats')
     }
 
-    async function init () {
+    async function init (): Promise<void> {
       isLoading.value = true
 
       await fetchChats()
@@ -62,7 +62,7 @@ export default {
       isLoading
     }
   }
-}
+})
 </script>
 
 <style lang="stylus" module>

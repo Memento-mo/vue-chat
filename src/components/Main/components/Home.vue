@@ -2,25 +2,31 @@
   <router-view />
 </template>
 
-<script>
-import { onMounted, ref } from 'vue'
+<script lang="ts">
+import { onMounted, ref, defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
-export default {
+import { Tokens } from '@/types/store/auth'
+
+export default defineComponent({
   setup() {
     const router = useRouter()
     const store = useStore()
 
-    function init () {
-      const token = store.getters['auth/getToken']
+    function init (): void {
+      const token: Pick<Tokens, 'token'> = store.getters['auth/getToken']
 
       if (!token) {
-        return router.replace({ name: 'login' })
+        router.replace({ name: 'login' })
+
+        return
       }
 
       if (token && router.currentRoute.value.name === 'login') {
-        return router.replace('/messages')
+        router.replace('/messages')
+
+        return
       }
     }
     
@@ -28,7 +34,7 @@ export default {
       init()
     })
   }
-}
+})
 </script>
 
 <style lang="stylus" module>

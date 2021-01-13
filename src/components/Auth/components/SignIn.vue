@@ -12,8 +12,9 @@
   <Toast position="top-center" />
 </template>
 
-<script>
-import { ref, reactive, provide, onMounted } from 'vue'
+<script lang="ts">
+
+import { ref, reactive, provide, onMounted, defineComponent, Ref } from 'vue'
 
 import SignWrapper from './SignWrapper.vue'
 
@@ -26,21 +27,27 @@ import Toast from 'primevue/toast.js'
 
 import { useStore } from 'vuex'
 import { useToast } from 'primevue/usetoast.js'
-import { useAxios } from '@api/api.js'
+import { useAxios } from '@api/api'
 import { useRouter } from 'vue-router'
 
-export default {
+import { IErrors, IField, IForm, HTMLElementEvent } from '@/types/auth/signIn'
+import { Tokens } from '@/types/store/auth'
+import { AxiosResponse } from 'axios'
+
+type Fields = 'login' | 'password'
+
+export default defineComponent({
   setup() {
     const $http = useAxios()
     const store = useStore()
     const toast = useToast()
     const router = useRouter()
 
-    const isLoading = ref(false)
+    const isLoading: Ref<boolean> = ref(false)
 
-    const isError = ref(true)
+    const isError: Ref<boolean> = ref(true)
 
-    const errors = reactive({
+    const errors: Pick<IErrors, 'login' | 'password'> = reactive({
       login: {
         isError: false,
         message: 'Длина не должна быть равна 0 и не быть больше 10 символов',
@@ -51,20 +58,20 @@ export default {
       }
     })
 
-    const fields = [
+    const fields: Array<IField> = [
       { field: 'login', placeholder: 'Login' },
       { field: 'password', placeholder: 'Password' }
     ]
 
-    const form = reactive({ login: '', password: '' })
+    const form: Pick<IForm, Fields> = reactive({ login: '', password: '' })
 
-    function inputChange (val, input) {
+    function inputChange<T extends keyof Pick<IForm, Fields>> (val: HTMLElementEvent<HTMLTextAreaElement>, input: T): void {
       form[input] = val.target.value
       validateForm(input, val.target.value)
     }
 
-    function validateForm (type, value) {
-      const { email, login, password, firstName, lastName } = errors
+    function validateForm (type: Fields, value: string): void {
+      const { login, password } = errors
       switch (type) {
         case 'login':
           login.isError = value.length > 10 || value.length === 0
@@ -75,30 +82,31 @@ export default {
         default:
           break
       }
+      const getKeys = Object.keys as <T extends Pick<IErrors, Fields> | Pick<IForm, Fields>>(obj: T) => Array<keyof T>
 
-      const someError = Object.keys(errors).some(value => errors[value].isError)
-      const someLengthEqualZero = Object.keys(form).some(value => form[value].length === 0)
+      const someError = getKeys(errors).some((value) => errors[value].isError)
+      const someLengthEqualZero = getKeys(form).some(value => form[value].length === 0)
 
       someError || someLengthEqualZero ? isError.value = true : isError.value = false
     }
 
-    function setLoading (is) {
+    function setLoading (is: boolean): void {
       isLoading.value = is
     }
 
-    function submit (e) {
+    function submit (e: Event): void {
       setLoading(true)
 
       e.preventDefault()
 
-      $http.post('login', form)
-        .then(({ data }) => {
+      $http.post('/login', form)
+        .then(({ data }: AxiosResponse<Tokens>) => {
           store.dispatch('auth/setToken', { token: data.token, refreshToken: data.refreshToken })
 
           router.replace({ name: 'messages' })
           toast.add({ severity:'success', summary: 'Success', detail:'You have successfully logged in', life: 3000 })
         })
-        .catch(() => {
+        .catch((e) => {
           toast.add({ severity:'error', summary: 'Error', detail:'The account does not exist or you entered an incorrect password', life: 3000 })
         })
         .finally(() => {
@@ -106,11 +114,11 @@ export default {
         })
     }
 
-    function init () {
-      const token = store.getters['auth/getToken']
+    function init (): void {
+      const token: Pick<Tokens, 'token'> = store.getters['auth/getToken']
 
       if (token) {
-        return router.replace({ name: 'messages' })
+        router.replace({ name: 'messages' })
       }
     }
 
@@ -133,5 +141,5 @@ export default {
     SignWrapper,
     Toast
   }
-}
+})
 </script>
