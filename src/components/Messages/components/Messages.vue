@@ -1,20 +1,7 @@
 <template>
   <div :class="$style['message-container']">
     <header :class="$style.header">
-      <div :class="$style.header__controls">
-        <button
-          :class="$style['header__controls-button']"
-          @click="handleTo('signout')"
-        >
-          SignOut
-        </button>
-        <button
-          :class="$style['header__controls-button']"
-          @click="handleTo('registration')"
-        >
-          SignUp
-        </button>
-      </div>
+      <Navigation />
     </header>
     <main :class="$style.messages">
       <aside :class="$style.messages__chats">
@@ -30,6 +17,7 @@
 <script lang="ts">
 import Chats from './Chats.vue'
 import Chat from './Chat.vue'
+import Navigation from '../../Main/components/Navigation.vue'
 
 import { useRouter } from 'vue-router'
 import { Dispatch, useStore } from 'vuex'
@@ -72,54 +60,66 @@ export default defineComponent({
   },
   components: {
     Chats,
-    Chat
+    Chat,
+    Navigation
   }
 })
 </script>
 
 <style lang="stylus" module>
 .message-container {
-  margin 10px auto
+  position relative
+  top 7%
+  display flex
+  height 85%
+  margin 0px auto
   background-color var(--color-primary)
+  border-radius 3rem
 
-  max-width 110rem
-  height 93vh
+  width 125rem
   color var(--color-light)
 
-  -webkit-box-shadow: 0px 0px 35px 2px rgba(26,23,26,1);
-  -moz-box-shadow: 0px 0px 35px 2px rgba(26,23,26,1);
-  box-shadow: 0px 0px 35px 2px rgba(26,23,26,1);
+  &::before {
+    position absolute
+    content ''
+    height: 100%;
+    width: 105rem;
+    z-index: -1;
+    left: 9%;
+
+    -webkit-box-shadow 0px 0px 35px 2px #1a171a
+    -moz-box-shadow 0px 0px 35px 2px #1a171a
+    box-shadow 0px 13px 51px 2px #1a171a
+  }
 }
 
 .header {
-  height 8rem
-  padding 1rem
+  width 8rem
+  background-color var(--color-primary-light)
+  border-top-left-radius 3rem
+  border-bottom-left-radius 3rem
 }
 
 .messages {
   display flex
-  height 85vh
+  width 100%
 
   &__chats {
-    min-width 250px
-    flex-basis 23%
+    min-width 420px
     height 100%
-    background var(--color-secondary)
-    overflow-y scroll
+    // overflow-y scroll
 
-    &::-webkit-scrollbar { width: 2px; height: 3px;}
-    &::-webkit-scrollbar-track { background-color: #fff;}
-    &::-webkit-scrollbar-track-piece { background-color: var(--color-secondary-light);}
-    &::-webkit-scrollbar-thumb { height: 50px; background-color: var(--color-light-2); border-radius: 3px;}
-    &::-webkit-scrollbar-corner { background-color: #fff;}
-    &::-webkit-resizer { background-color: #fff;}
+    // &::-webkit-scrollbar { width: 2px; height: 3px;}
+    // &::-webkit-scrollbar-track { background-color: #fff;}
+    // &::-webkit-scrollbar-track-piece { background-color: var(--color-secondary-light);}
+    // &::-webkit-scrollbar-thumb { height: 50px; background-color: var(--color-light-2); border-radius: 3px;}
+    // &::-webkit-scrollbar-corner { background-color: #fff;}
+    // &::-webkit-resizer { background-color: #fff;}
   }
 
   &__chat {
-    flex-basis 85rem
-    flex-shrink 2
+    width 100%
     height 100%
-    background var(--color-secondary)
     padding 1rem
   }
 }

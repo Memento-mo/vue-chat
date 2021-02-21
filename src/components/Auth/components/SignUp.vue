@@ -15,10 +15,6 @@
 <script lang="ts">
 import { reactive, ref, provide, defineComponent, Ref } from 'vue'
 
-import Form from '@components-ui/Form/Form.vue'
-import FormItem from '@components-ui/Form/FormItem.vue'
-import Input from '@components-ui/Form/Input.vue'
-import Button from '@components-ui/Form/Button.vue'
 import SignWrapper from './SignWrapper.vue'
 
 import Toast from 'primevue/toast'
@@ -26,7 +22,7 @@ import Toast from 'primevue/toast'
 import validator from 'email-validator'
 
 import { useStore } from 'vuex'
-import { useToast } from 'primevue/usetoast.js'
+import { useToast } from 'primevue/usetoast'
 import { useAxios } from '@api/api'
 import { IErrors, IField, IForm, HTMLElementEvent } from '@/types/auth/signIn'
 import { Tokens } from '@/types/store/auth'

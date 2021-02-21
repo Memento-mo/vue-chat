@@ -28,7 +28,7 @@ export default {
         const { data }: ChatsResponse = await $http.get('/messages')
 
         commit('SET_CHATS', data.chats)
-
+        
         resolve()
       })
     },

@@ -23,10 +23,10 @@ import FormItem from '@components-ui/Form/FormItem.vue'
 import Input from '@components-ui/Form/Input.vue'
 import Button from '@components-ui/Form/Button.vue'
 
-import Toast from 'primevue/toast.js'
+import Toast from 'primevue/toast'
 
 import { useStore } from 'vuex'
-import { useToast } from 'primevue/usetoast.js'
+import { useToast } from 'primevue/usetoast'
 import { useAxios } from '@api/api'
 import { useRouter } from 'vue-router'
 

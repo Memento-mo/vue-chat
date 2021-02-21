@@ -24,10 +24,10 @@ module.exports = {
     '@api': resolve('src/api'),
     '@components-ui': resolve('src/components/ui/components'),
     '@components-base': resolve('src/components'),
-    '@utils': resolve('src/utils'),
-    '~': resolve('src/'),
-    '@/types': resolve('src/types/'),
-    'primevue': resolve('node_modules/primevue')
+    '@/utils': resolve('src/utils'),
+    '@/types': resolve('src/types'),
+    '@/icons': resolve('src/static/svg'),
+    '~': resolve('src/')
   }
   },
   module: {
@@ -55,10 +55,27 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
-              modules: true
+              modules: {
+                localIdentName: "[name]__[local]--[hash:base64:5]"
+              }
             }
           },
           'stylus-loader'
+        ],
+      },
+      {
+        test: /\.scss?$/,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              modules: {
+                localIdentName: "[name]__[local]--[hash:base64:5]"
+              }
+            }
+          },
+          'sass-loader'
         ],
       },
       {
@@ -66,15 +83,18 @@ module.exports = {
         use: ['style-loader', 'css-loader']
       },
       {
-        test: /\.(png|jpe?g|gif)$/i,
+        test: /\.(png|jpe?g|gif|svg)$/i,
         use: [
           {
             loader: 'file-loader',
+            options: {
+              name: '[path][name].[ext]',
+            }
           },
         ]
       },
       {
-        test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+        test: /\.(woff(2)?|ttf|eot)(\?v=\d+\.\d+\.\d+)?$/,
         use: [
           {
             loader: 'file-loader',

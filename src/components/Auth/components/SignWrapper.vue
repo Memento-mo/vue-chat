@@ -7,26 +7,29 @@
       :submit="submit"
     >
       <FormItem
+        :id="item.field"
         :key="index"
-        v-for="(item, index) in fields"
         :isValidate="errors[item.field]"
         :name="item.placeholder"
-        :id="item.field"
+        v-for="(item, index) in fields"
       >
         <Input
           :name="item.field"
           :value="form[item.field]"
-          @input="(val) => inputChange(val, item.field)"
           :type="item.field === 'password' ? 'password' : 'text'"
+          @input="(val) => inputChange(val, item.field)"
         />
       </FormItem>
       
-      <Button :disabled="isError" label="Send" />
+      <Button
+        :disabled="isError"
+        label="Send"
+      />
 
       <footer :class="$style.footer">
         <div
-          v-show="isLogin"
           :class="$style.footer__text"
+          v-show="isLogin"
         >
           Don't have an account?
           <router-link
@@ -38,8 +41,8 @@
         </div>
 
         <div
-          v-show="isRegistration"
           :class="$style.footer__text"
+          v-show="isRegistration"
         >
           Do you have an account?
           <router-link
@@ -64,29 +67,41 @@ import Button from '@components-ui/Form/Button.vue'
 import { useRoute } from 'vue-router'
 
   export default defineComponent({
+    components: {
+      Form,
+      Input,
+      FormItem,
+      Button
+    },
     props: {
       title: {
         type: String,
         default: 'Title'
       },
       submit: {
-        type: Function
+        type: Function,
+        default: () => {}
       },
       fields: {
         type: Array,
-        requiered: true
+        requiered: true,
+        default: () => {}
       },
       errors: {
-        type: Object
+        type: Object,
+        default: () => {}
       },
       inputChange: {
-        type: Function
+        type: Function,
+        default: () => {}
       },
       form: {
-        type: Object
+        type: Object,
+        default: () => {}
       },
       isError: {
-        type: Boolean
+        type: Boolean,
+        default: () => {}
       }
     },
     setup () {
@@ -100,12 +115,6 @@ import { useRoute } from 'vue-router'
         isLogin,
         isRegistration
       }
-    },
-    components: {
-      Form,
-      Input,
-      FormItem,
-      Button
     }
   })
 </script>

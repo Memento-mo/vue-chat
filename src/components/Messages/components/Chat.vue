@@ -12,8 +12,8 @@
     <div :class="$style['chat-messages']">
       <div 
         :key="message.id"
-        v-for="message in messages"
         :class="$style['chat-message']"
+        v-for="message in messages"
       >
         <div
           :class="$style['input-box__image']" 
@@ -36,11 +36,11 @@
       <div>
         <form @submit.prevent="handleSend">
           <input
-            v-model="inputMessage"
-            :class="$style['input-box__input']"
-            type="text"
             placeholder="Write a message..."
-          />
+            type="text"
+            :class="$style['input-box__input']"
+            v-model="inputMessage"
+          >
         </form>
       </div>
       <div
@@ -74,6 +74,7 @@ export default defineComponent({
 
     const messages: ComputedRef<Message[]> = computed(() => {
       if (chat.value) {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         let bothMessages = chat.value.messages.sort((a, b) => {
           const dateA = Number(new Date(a.time))
           const dateB = Number(new Date(b.time))
@@ -148,8 +149,8 @@ export default defineComponent({
     bottom 0
 
     &__image {
-      height 5rem
-      width 5rem
+      min-height 50px
+      min-width 50px
       background-size cover 
       border-radius 50%
     }
